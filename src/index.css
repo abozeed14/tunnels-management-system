@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tunnel Management System - Industrial Control Theme
+   Dark, high-contrast interface optimized for mission-critical monitoring */
+
+@layer base {
+  :root {
+    /* Industrial Dark Theme */
+    --background: 220 20% 6%;
+    --foreground: 210 20% 95%;
+    
+    --card: 220 18% 10%;
+    --card-foreground: 210 20% 95%;
+    
+    --popover: 220 18% 8%;
+    --popover-foreground: 210 20% 95%;
+    
+    /* Cyan/Teal Primary - Technical precision */
+    --primary: 185 70% 50%;
+    --primary-foreground: 220 20% 6%;
+    
+    /* Muted navy for secondary elements */
+    --secondary: 220 25% 18%;
+    --secondary-foreground: 210 20% 85%;
+    
+    --muted: 220 20% 14%;
+    --muted-foreground: 215 15% 55%;
+    
+    --accent: 185 60% 25%;
+    --accent-foreground: 185 70% 85%;
+    
+    /* Critical red for alerts */
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 20% 18%;
+    --input: 220 20% 14%;
+    --ring: 185 70% 50%;
+    
+    --radius: 0.5rem;
+    
+    /* Status Colors - High visibility for control rooms */
+    --status-operational: 145 70% 45%;
+    --status-warning: 38 95% 55%;
+    --status-critical: 0 75% 55%;
+    --status-offline: 220 15% 40%;
+    --status-info: 200 80% 55%;
+    
+    /* Glow effects for active states */
+    --glow-primary: 0 0 20px hsl(185 70% 50% / 0.4);
+    --glow-success: 0 0 20px hsl(145 70% 45% / 0.4);
+    --glow-warning: 0 0 20px hsl(38 95% 55% / 0.4);
+    --glow-critical: 0 0 20px hsl(0 75% 55% / 0.5);
+    
+    /* Sidebar - Darker for hierarchy */
+    --sidebar-background: 220 22% 5%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 185 70% 50%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 220 25% 12%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 220 20% 12%;
+    --sidebar-ring: 185 70% 50%;
+    
+    /* Chart colors */
+    --chart-voltage: 185 70% 50%;
+    --chart-current: 280 70% 60%;
+    --chart-power: 145 70% 50%;
+    --chart-grid: 220 15% 20%;
+  }
+
+  /* Light mode (optional, but keeping dark as default for control rooms) */
+  .light {
+    --background: 210 20% 98%;
+    --foreground: 220 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+    --primary: 185 70% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 220 20% 20%;
+    --muted: 210 15% 92%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 185 50% 92%;
+    --accent-foreground: 185 70% 30%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 185 70% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  
+  /* Monospace for data/metrics */
+  .font-mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Industrial card with subtle glow on hover */
+  .card-industrial {
+    @apply bg-card border border-border rounded-lg transition-all duration-200;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card)) 0%,
+      hsl(220 18% 8%) 100%
+    );
+  }
+  
+  .card-industrial:hover {
+    @apply border-primary/30;
+    box-shadow: var(--glow-primary);
+  }
+  
+  /* Status indicator pulse animation */
+  .status-pulse {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  
+  /* Critical alert pulse */
+  .alert-pulse {
+    animation: alert-glow 1s ease-in-out infinite;
+  }
+  
+  @keyframes alert-glow {
+    0%, 100% { 
+      box-shadow: 0 0 5px hsl(var(--status-critical) / 0.5);
+    }
+    50% { 
+      box-shadow: 0 0 20px hsl(var(--status-critical) / 0.8);
+    }
+  }
+  
+  /* Control button styles */
+  .control-btn {
+    @apply relative overflow-hidden transition-all duration-150;
+  }
+  
+  .control-btn::after {
+    content: '';
+    @apply absolute inset-0 bg-white/10 opacity-0 transition-opacity;
+  }
+  
+  .control-btn:active::after {
+    @apply opacity-100;
+  }
+  
+  /* Data grid lines */
+  .grid-lines {
+    background-image: 
+      linear-gradient(hsl(var(--chart-grid)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--chart-grid)) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Gradient text for headings */
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(185 60% 70%) 100%
+    );
+  }
+  
+  /* Scrollbar styling */
+  .scrollbar-industrial::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .scrollbar-industrial::-webkit-scrollbar-track {
+    @apply bg-muted/30 rounded;
+  }
+  
+  .scrollbar-industrial::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded hover:bg-muted-foreground/50;
+  }
+}
+
+@layer utilities {
+  /* Status background utilities */
+  .bg-status-operational {
+    background-color: hsl(var(--status-operational));
+  }
+  .bg-status-warning {
+    background-color: hsl(var(--status-warning));
+  }
+  .bg-status-critical {
+    background-color: hsl(var(--status-critical));
+  }
+  .bg-status-offline {
+    background-color: hsl(var(--status-offline));
+  }
+  .bg-status-info {
+    background-color: hsl(var(--status-info));
+  }
+  
+  /* Status text utilities */
+  .text-status-operational {
+    color: hsl(var(--status-operational));
+  }
+  .text-status-warning {
+    color: hsl(var(--status-warning));
+  }
+  .text-status-critical {
+    color: hsl(var(--status-critical));
+  }
+  .text-status-offline {
+    color: hsl(var(--status-offline));
+  }
+  .text-status-info {
+    color: hsl(var(--status-info));
+  }
+  
+  /* Glow utilities */
+  .glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+  .glow-success {
+    box-shadow: var(--glow-success);
+  }
+  .glow-warning {
+    box-shadow: var(--glow-warning);
+  }
+  .glow-critical {
+    box-shadow: var(--glow-critical);
+  }
+}
