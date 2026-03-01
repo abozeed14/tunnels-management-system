@@ -50,26 +50,48 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 10000,
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and logging
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Debug logging
+    console.debug(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, {
+      headers: config.headers,
+      params: config.params,
+      data: config.data
+    });
+    
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error("[API Request Error]", error);
+    return Promise.reject(error);
+  }
 );
 
-// Response interceptor for token validation
+// Response interceptor for token validation and logging
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.debug(`[API Response] ${response.status} ${response.config.url}`, {
+      data: response.data
+    });
+    return response;
+  },
   (error: AxiosError<{ message?: string }>) => {
+    console.error(`[API Error] ${error.response?.status || 'Unknown'} ${error.config?.url}`, {
+      message: error.message,
+      response: error.response?.data
+    });
+
     // Don't redirect if it's a login attempt failure
     const isLoginRequest = error.config?.url?.includes("/auth/login");
     
     if (error.response?.status === 401 && !isLoginRequest) {
+      console.warn("[Auth] 401 Unauthorized detected, clearing session and redirecting to login");
       // Clear auth state and redirect to login on any 401
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
