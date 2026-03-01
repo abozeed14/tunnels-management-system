@@ -12,7 +12,7 @@ export default function TicketsPage() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   
-  const { data: pagedTickets, isLoading, refetch, isFetching } = usePagedTickets({
+  const { data: pagedTickets, isLoading, refetch, isFetching, isError } = usePagedTickets({
     PageNumber: page,
     PageSize: pageSize,
   });
@@ -49,7 +49,20 @@ export default function TicketsPage() {
         </div>
 
         {/* Tickets */}
-        {isLoading && !pagedTickets ? (
+        {isError ? (
+          <Card className="card-industrial border-status-critical/50">
+            <CardContent className="py-12 text-center">
+              <AlertTriangle className="h-16 w-16 mx-auto text-status-critical mb-4" />
+              <h3 className="text-lg font-semibold mb-2 text-status-critical">Error Loading Tickets</h3>
+              <p className="text-muted-foreground mb-4">
+                Failed to load ticket data. Please try again.
+              </p>
+              <Button onClick={() => refetch()} variant="outline">
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
+        ) : isLoading && !pagedTickets ? (
           <Card className="card-industrial">
             <CardContent className="p-4">
               <Skeleton className="h-64 w-full" />

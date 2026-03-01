@@ -26,13 +26,21 @@ export enum ComponentType {
 }
 
 export enum FaultType {
-  FanTrip = 0,
-  VoltageLow = 1,
-  VoltageHigh = 2,
-  CurrentHigh = 3,
-  PowerFactorLow = 4,
-  LightOffSchedule = 5,
-  MeterDisconnected = 6,
+  FanPowerLoss = 0,
+  FanTrip = 1,
+  LightOffSchedule = 2,
+  VoltageHigh = 3,
+  VoltageLow = 4,
+  CurrentHigh = 5,
+  PowerFactorLow = 6,
+  PhaseLoss = 7,
+  MeterDisconnected = 8,
+  PowerOutage = 9,
+  CommunicationFailure = 10,
+  HardwareMalfunction = 11,
+  SoftwareError = 12,
+  Vandalism = 13,
+  Other = 14,
 }
 
 export enum MockFanAction {
@@ -248,13 +256,21 @@ export const FaultTypeEnum = z.union([
   z.nativeEnum(FaultType),
   z.string().transform((val) => {
     const map: Record<string, FaultType> = {
+      "FanPowerLoss": FaultType.FanPowerLoss,
       "FanTrip": FaultType.FanTrip,
-      "VoltageLow": FaultType.VoltageLow,
+      "LightOffSchedule": FaultType.LightOffSchedule,
       "VoltageHigh": FaultType.VoltageHigh,
+      "VoltageLow": FaultType.VoltageLow,
       "CurrentHigh": FaultType.CurrentHigh,
       "PowerFactorLow": FaultType.PowerFactorLow,
-      "LightOffSchedule": FaultType.LightOffSchedule,
+      "PhaseLoss": FaultType.PhaseLoss,
       "MeterDisconnected": FaultType.MeterDisconnected,
+      "PowerOutage": FaultType.PowerOutage,
+      "CommunicationFailure": FaultType.CommunicationFailure,
+      "HardwareMalfunction": FaultType.HardwareMalfunction,
+      "SoftwareError": FaultType.SoftwareError,
+      "Vandalism": FaultType.Vandalism,
+      "Other": FaultType.Other,
     };
     return map[val] ?? (val as any);
   }).pipe(z.nativeEnum(FaultType)),

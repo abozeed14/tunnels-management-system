@@ -26,13 +26,21 @@ const COMPONENT_ICONS: Record<ComponentType, any> = {
  * Fault type labels for display
  */
 const FAULT_TYPE_LABELS: Record<FaultType, string> = {
+  [FaultType.FanPowerLoss]: "Fan Power Loss",
   [FaultType.FanTrip]: "Fan Trip",
-  [FaultType.VoltageLow]: "Low Voltage",
+  [FaultType.LightOffSchedule]: "Lighting Off Schedule",
   [FaultType.VoltageHigh]: "High Voltage",
+  [FaultType.VoltageLow]: "Low Voltage",
   [FaultType.CurrentHigh]: "High Current",
   [FaultType.PowerFactorLow]: "Low Power Factor",
-  [FaultType.LightOffSchedule]: "Lighting Off Schedule",
+  [FaultType.PhaseLoss]: "Phase Loss",
   [FaultType.MeterDisconnected]: "Meter Disconnected",
+  [FaultType.PowerOutage]: "Power Outage",
+  [FaultType.CommunicationFailure]: "Communication Failure",
+  [FaultType.HardwareMalfunction]: "Hardware Malfunction",
+  [FaultType.SoftwareError]: "Software Error",
+  [FaultType.Vandalism]: "Vandalism",
+  [FaultType.Other]: "Other Fault",
 };
 
 /**
@@ -61,7 +69,7 @@ export function FaultAlert({ ticket, onClose, className }: FaultAlertProps) {
         <div className="flex items-center gap-2 mb-1">
           <ComponentIcon className="h-4 w-4 text-status-critical" />
           <span className="font-medium text-status-critical">
-            {FAULT_TYPE_LABELS[ticket.faultType]}
+            {FAULT_TYPE_LABELS[ticket.faultType] || `Fault Type ${ticket.faultType}`}
           </span>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -166,7 +174,7 @@ export function TicketRow({ ticket, onClose, onView }: TicketRowProps) {
       </td>
       <td className="py-3 px-4">
         <StatusBadge status="critical" size="sm">
-          {FAULT_TYPE_LABELS[ticket.faultType]}
+          {FAULT_TYPE_LABELS[ticket.faultType] || `Type ${ticket.faultType}`}
         </StatusBadge>
       </td>
       <td className="py-3 px-4">
