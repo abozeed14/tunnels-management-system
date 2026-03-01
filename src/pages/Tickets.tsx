@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePagedTickets, useCloseTicket } from "@/hooks/use-tickets";
-import { AlertTriangle, Plus, CheckCircle } from "lucide-react";
+import { AlertTriangle, Plus, CheckCircle, RotateCw } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export default function TicketsPage() {
   const [page, setPage] = useState(1);
@@ -85,9 +86,17 @@ export default function TicketsPage() {
             <CardContent className="py-12 text-center">
               <CheckCircle className="h-16 w-16 mx-auto text-status-operational mb-4" />
               <h3 className="text-lg font-semibold mb-2">All Clear!</h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-6">
                 No fault tickets found.
               </p>
+              <Button 
+                variant="outline" 
+                onClick={handleRefresh}
+                disabled={isFetching}
+              >
+                <RotateCw className={cn("h-4 w-4 mr-2", isFetching && "animate-spin")} />
+                Refresh
+              </Button>
             </CardContent>
           </Card>
         )}

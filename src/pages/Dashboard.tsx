@@ -10,6 +10,7 @@ import { usePagedTickets, useCloseTicket } from "@/hooks/use-tickets";
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Route,
   Fan,
@@ -18,11 +19,13 @@ import {
   AlertTriangle,
   Activity,
   TrendingUp,
+  RotateCw,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { data: tunnels, isLoading: tunnelsLoading } = useTunnels();
+  const { data: tunnels, isLoading: tunnelsLoading, refetch: refetchTunnels } = useTunnels();
   
   const [page, setPage] = useState(1);
   const pageSize = 5; // Smaller page size for dashboard
@@ -32,12 +35,29 @@ export default function DashboardPage() {
     PageSize: pageSize,
   });
   
-  const { data: stats, isLoading: statsLoading } = useDashboardStats();
+  const { data: stats, isLoading: statsLoading, refetch: refetchStats, isFetching: isFetchingStats } = useDashboardStats();
   const closeTicket = useCloseTicket();
 
   const handleTunnelClick = (tunnelId: number) => {
     navigate(`/tunnels/${tunnelId}`);
   };
+
+  const handleRefreshAll = async () => {
+    const promises = [
+      refetchStats(),
+      refetchTunnels(),
+      refetchTickets()
+    ];
+    
+    try {
+      await Promise.all(promises);
+      toast.success("Dashboard updated");
+    } catch (error) {
+      toast.error("Failed to update dashboard");
+    }
+  };
+
+  const isRefreshing = isFetchingStats || isFetchingTickets;
 
   return (
     <DashboardLayout>
@@ -52,10 +72,22 @@ export default function DashboardPage() {
               Real-time infrastructure monitoring and control
             </p>
           </div>
-          <StatusBadge status="operational" pulse size="lg">
-            <Activity className="h-4 w-4" />
-            All Systems Operational
-          </StatusBadge>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefreshAll}
+              disabled={isRefreshing}
+              className="hidden sm:flex"
+            >
+              <RotateCw className={cn("h-4 w-4 mr-2", isRefreshing && "animate-spin")} />
+              Refresh
+            </Button>
+            <StatusBadge status="operational" pulse size="lg">
+              <Activity className="h-4 w-4" />
+              All Systems Operational
+            </StatusBadge>
+          </div>
         </div>
 
         {/* Summary cards */}

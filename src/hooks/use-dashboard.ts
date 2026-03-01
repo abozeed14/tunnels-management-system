@@ -9,6 +9,6 @@ export function useDashboardStats() {
   return useQuery({
     queryKey: dashboardKeys.stats,
     queryFn: dashboardApi.getStats,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 60000, // Refresh every 1 minute
   });
 }
